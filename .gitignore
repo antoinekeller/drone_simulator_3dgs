@@ -1,0 +1,4 @@
+node_modules/*
+./vite-project/*
+vite-project
+.DS_Store
