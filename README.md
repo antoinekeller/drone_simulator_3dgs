@@ -18,3 +18,13 @@ npm run dev
 ```
 
 This will start a local server at `http://localhost:5173/`
+
+## Drone model
+
+I downloaded model from sketchab (flying drone animation). There was somme issue with the `KHR_materials_pbrSpecularGlossiness`. I had to :
+
+```
+npm install --global @gltf-transform/cli
+
+gltf-transform metalrough flying_drone_animation.glb out.glb
+```
