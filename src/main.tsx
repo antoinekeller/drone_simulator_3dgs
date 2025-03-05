@@ -88,3 +88,8 @@ function animate() {
 
 const clock = new THREE.Clock(); // Clock to manage the time between frames
 renderer.setAnimationLoop(animate);
+
+// Start checking gamepad connection when the page loads
+window.addEventListener('gamepadconnected', (event) => {
+  console.log(`Gamepad connected: ${event.gamepad.id}`);
+});
