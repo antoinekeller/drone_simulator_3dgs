@@ -79,6 +79,8 @@ const clock = new THREE.Clock();
 var yaw = 0.0;
 var omega_yaw = 0.0;
 const max_omega_yaw = 90 * Math.PI / 180; // 90 degrees per second
+var vz = 0.0
+const max_vz = 0.1; // 3m/s ?
 
 function updateGamepad() {
   const gamepads = navigator.getGamepads();
@@ -103,7 +105,7 @@ function updateGamepad() {
   const tau = 0.3;
 
   var omega_c = -leftX * max_omega_yaw;
-  omega_yaw = Math.exp(-dt/tau) * omega_yaw + (1 - Math.exp(-dt/tau))* omega_c;
+  omega_yaw = Math.exp(-dt/tau) * omega_yaw + (1 - Math.exp(-dt/tau)) * omega_c;
   console.log(leftX);
   // omega_yaw = THREE.MathUtils.clamp(omega_yaw, -max_omega_yaw, max_omega_yaw);
 
@@ -115,10 +117,17 @@ function updateGamepad() {
   // console.log(leftY);
   // droneModel.rotation.z -= leftX * speed;
 
+  const tau_v = 0.1;
+  var vz_c = - leftY * max_vz;
+  vz = Math.exp(-dt/tau_v) * vz + (1 - Math.exp(-dt/tau_v)) * vz_c;
+
+  const translation = new THREE.Matrix4().makeTranslation(0, 0, vz);
+
   const rotZ = new THREE.Matrix4().makeRotationZ(omega_yaw * dt);
 
   const anotherMatrix = new THREE.Matrix4()
-    .multiply(rotZ);
+    .multiply(rotZ)
+    .multiply(translation);
 
   droneModel.applyMatrix4(anotherMatrix);
 
