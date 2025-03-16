@@ -206,3 +206,23 @@ renderer.setAnimationLoop(animate);
 window.addEventListener("gamepadconnected", (event) => {
   console.log(`Gamepad connected: ${event.gamepad.id}`);
 });
+
+window.addEventListener("keydown", (event) => {
+  if (event.key == "w") controls.leftY = -1;
+  if (event.key == "s") controls.leftY = 1;
+  if (event.key == "a") controls.leftX = -1;
+  if (event.key == "d") controls.leftX = 1;
+
+  if (event.key == "ArrowUp") controls.rightY = -1;
+  if (event.key == "ArrowDown") controls.rightY = 1;
+  if (event.key == "ArrowLeft") controls.rightX = -1;
+  if (event.key == "ArrowRight") controls.rightX = 1;
+});
+
+window.addEventListener("keyup", (event) => {
+  if (event.key == "w" || event.key == "s") controls.leftY = 0;
+  if (event.key == "a" || event.key == "d") controls.leftX = 0;
+  if (event.key == "ArrowUp" || event.key == "ArrowDown") controls.rightY = 0;
+  if (event.key == "ArrowLeft" || event.key == "ArrowRight")
+    controls.rightX = 0;
+});
