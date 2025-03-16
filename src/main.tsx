@@ -52,7 +52,7 @@ const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
 const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
 
-const combinedMatrix = new THREE.Matrix4()
+const initMatrix = new THREE.Matrix4()
   .multiply(translation)
   .multiply(rotX)
   .multiply(rotY);
@@ -66,7 +66,7 @@ loader.load(glbModelPath, (gltf) => {
 
   console.log(droneModel.rotation);
   
-  droneModel.applyMatrix4(combinedMatrix);
+  droneModel.applyMatrix4(initMatrix);
 
   console.log(droneModel.rotation);
 
@@ -76,7 +76,6 @@ loader.load(glbModelPath, (gltf) => {
 });
 
 const clock = new THREE.Clock();
-var yaw = 0.0;
 var omega_yaw = 0.0;
 const max_omega_yaw = 90 * Math.PI / 180; // 90 degrees per second
 var vz = 0.0
@@ -106,13 +105,6 @@ function updateGamepad() {
 
   var omega_c = -leftX * max_omega_yaw;
   omega_yaw = Math.exp(-dt/tau) * omega_yaw + (1 - Math.exp(-dt/tau)) * omega_c;
-  console.log(leftX);
-  // omega_yaw = THREE.MathUtils.clamp(omega_yaw, -max_omega_yaw, max_omega_yaw);
-
-  console.log("omega_yaw", omega_yaw);
-  // console.log("max_omega_yaw", max_omega_yaw);
-  yaw += omega_yaw * dt;
-
 
   // console.log(leftY);
   // droneModel.rotation.z -= leftX * speed;
@@ -125,13 +117,16 @@ function updateGamepad() {
 
   const rotZ = new THREE.Matrix4().makeRotationZ(omega_yaw * dt);
 
-  const anotherMatrix = new THREE.Matrix4()
+  const t1 = new THREE.Matrix4().makeTranslation(-droneModel.position.x, -droneModel.position.y, -droneModel.position.z);
+  const t2 = new THREE.Matrix4().makeTranslation(droneModel.position.x, droneModel.position.y, droneModel.position.z);
+
+  const displacementMatrix = new THREE.Matrix4()
+    .multiply(t2)
     .multiply(rotZ)
+    .multiply(t1)
     .multiply(translation);
 
-  droneModel.applyMatrix4(anotherMatrix);
-
-  // console.log(yaw);
+  droneModel.applyMatrix4(displacementMatrix);
 }
 
 function animate() {
