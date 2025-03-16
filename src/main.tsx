@@ -105,10 +105,10 @@ function updateGamepad() {
   const rightX = gp.axes[2];
   const rightY = gp.axes[3];
 
-  const tau = 0.3;
+  const tau_yaw = 0.3;
 
   var omega_c = -leftX * max_omega_yaw;
-  omega_yaw = Math.exp(-dt/tau) * omega_yaw + (1 - Math.exp(-dt/tau)) * omega_c;
+  omega_yaw = Math.exp(-dt/tau_yaw) * omega_yaw + (1 - Math.exp(-dt/tau_yaw)) * omega_c;
 
   const tau_v = 0.1;
   var vx_c = rightX * max_vx;
