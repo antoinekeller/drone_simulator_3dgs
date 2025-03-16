@@ -101,36 +101,47 @@ const max_roll = (15 * Math.PI) / 180;
 var pitch = 0.0;
 const max_pitch = (15 * Math.PI) / 180;
 
+var controls = {
+  leftX: 0,
+  leftY: 0,
+  rightX: 0,
+  rightY: 0,
+};
+
 function updateGamepad() {
   const gamepads = navigator.getGamepads();
-  if (!gamepads[0] || !droneModel) return;
+  if (!gamepads[0]) return;
+
+  const gp = gamepads[0];
+  controls.leftX = gp.axes[0];
+  controls.leftY = gp.axes[1];
+  controls.rightX = gp.axes[2];
+  controls.rightY = gp.axes[3];
+}
+
+function updateDynamics() {
+  if (!droneModel) return;
 
   const dt = 1 / 60.0; // 60 FPS
 
-  const gp = gamepads[0];
-  const leftX = gp.axes[0];
-  const leftY = gp.axes[1];
-  const rightX = gp.axes[2];
-  const rightY = gp.axes[3];
-
   const tau_yaw = 0.3;
 
-  var omega_c = -leftX * max_omega_yaw;
+  var omega_c = -controls.leftX * max_omega_yaw;
   omega_yaw =
     Math.exp(-dt / tau_yaw) * omega_yaw +
     (1 - Math.exp(-dt / tau_yaw)) * omega_c;
 
   const tau_v = 0.1;
-  var vx_c = rightX * max_vx;
-  var vy_c = -rightY * max_vy;
-  var vz_c = -leftY * max_vz;
+  var vx_c = controls.rightX * max_vx;
+  var vy_c = -controls.rightY * max_vy;
+  var vz_c = -controls.leftY * max_vz;
   vx = Math.exp(-dt / tau_v) * vx + (1 - Math.exp(-dt / tau_v)) * vx_c;
   vy = Math.exp(-dt / tau_v) * vy + (1 - Math.exp(-dt / tau_v)) * vy_c;
   vz = Math.exp(-dt / tau_v) * vz + (1 - Math.exp(-dt / tau_v)) * vz_c;
-  var roll_c = rightX * max_roll;
+  var roll_c = controls.rightX * max_roll;
   roll = Math.exp(-dt / tau_v) * roll + (1 - Math.exp(-dt / tau_v)) * roll_c;
   var roll_v = ((roll_c - roll) / tau_v) * dt;
-  var pitch_c = rightY * max_pitch;
+  var pitch_c = controls.rightY * max_pitch;
   pitch = Math.exp(-dt / tau_v) * pitch + (1 - Math.exp(-dt / tau_v)) * pitch_c;
   var pitch_v = ((pitch_c - pitch) / tau_v) * dt;
 
@@ -186,6 +197,7 @@ function updateGamepad() {
 function animate() {
   if (mixer) mixer.update(clock.getDelta());
   updateGamepad();
+  updateDynamics();
   renderer.render(scene, camera);
 }
 
