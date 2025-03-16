@@ -2,7 +2,7 @@ import "./index.css";
 
 import * as GaussianSplats3D from "@mkkellogg/gaussian-splats-3d";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
 const ply = `src/assets/point_cloud.ply`;
 const glbModelPath = `src/assets/flying_drone_animation.glb`;
@@ -37,15 +37,17 @@ const viewer = new GaussianSplats3D.Viewer({
   useBuiltInControls: false,
 });
 
-viewer.addSplatScene(ply, { streamView: true }).then(() => viewer.start());
+viewer
+  .addSplatScene(ply, { streamView: true, showLoadingUI: false })
+  .then(() => viewer.start());
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "f") freeMode = !freeMode;
 });
 
 const loader = new GLTFLoader();
-let droneModel = null;
-let mixer = null;
+let droneModel: THREE.Object3D = null;
+let mixer: THREE.AnimationMixer = null;
 
 const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
@@ -53,7 +55,7 @@ const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
 const cameraPositionInDrone = new THREE.Vector3(0, -2, 2);
 const droneOffsetZ = new THREE.Vector3(0, 0, 1);
 
-loader.load(glbModelPath, (gltf) => {
+loader.load(glbModelPath, (gltf: GLTF) => {
   droneModel = gltf.scene;
   scene.add(droneModel);
   droneModel.position.set(0, 0, 0);
