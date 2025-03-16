@@ -35,10 +35,10 @@ const viewer = new GaussianSplats3D.Viewer({
   threeScene: scene,
   camera: camera,
   sphericalHarmonicsDegree: 0,
+  useBuiltInControls: false,
 });
 
-// viewer.addSplatScene(ply, { streamView: true }).then(() => viewer.start());
-// viewer.controls.target.set(3.0, 3.0, 9, 0);
+viewer.addSplatScene(ply, { streamView: true }).then(() => viewer.start());
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "f") freeMode = !freeMode;
@@ -88,9 +88,9 @@ const max_omega_yaw = 90 * Math.PI / 180; // 90 degrees per second
 var vx = 0.0
 var vy = 0.0
 var vz = 0.0
-const max_vx = 0.1; // 3m/s ?
-const max_vy = 0.1; // 3m/s ?
-const max_vz = 0.1; // 3m/s ?
+const max_vx = 0.1; 
+const max_vy = 0.1; 
+const max_vz = 0.1; 
 
 function updateGamepad() {
   const gamepads = navigator.getGamepads();
