@@ -52,6 +52,7 @@ const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
 const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
 const cameraPositionInDrone = new THREE.Vector3(0, -2, 2);
+const droneOffsetZ = new THREE.Vector3(0, 0, 1);
 
 
 loader.load(glbModelPath, (gltf) => {
@@ -75,9 +76,7 @@ loader.load(glbModelPath, (gltf) => {
     worldCameraPosition.z
   );
 
-  const small_z = new THREE.Vector3(0, 0, 1);
-  
-  camera.lookAt(new THREE.Vector3().addVectors(droneModel.position, small_z));
+  camera.lookAt(new THREE.Vector3().addVectors(droneModel.position, droneOffsetZ));
 
   mixer = new THREE.AnimationMixer(droneModel);
   mixer.clipAction(gltf.animations[0]).play();
@@ -106,20 +105,10 @@ function updateGamepad() {
   const rightX = gp.axes[2];
   const rightY = gp.axes[3];
 
-  // const l2 = gp.buttons[6];
-
-  // droneModel.position.x += leftX * speed;
-  // var theta = droneModel.rotation.z;
-  // console.log(theta);
-  // droneModel.position.x += rightX * speed * Math.cos(theta) - leftY * speed * Math.sin(theta);
-  // droneModel.position.y -= rightY * speed;
   const tau = 0.3;
 
   var omega_c = -leftX * max_omega_yaw;
   omega_yaw = Math.exp(-dt/tau) * omega_yaw + (1 - Math.exp(-dt/tau)) * omega_c;
-
-  // console.log(leftY);
-  // droneModel.rotation.z -= leftX * speed;
 
   const tau_v = 0.1;
   var vx_c = rightX * max_vx;
@@ -162,15 +151,12 @@ function updateGamepad() {
     worldCameraPosition.z
   );
 
-  const small_z = new THREE.Vector3(0, 0, 1);
-  
-  camera.lookAt(new THREE.Vector3().addVectors(droneModel.position, small_z));
+  camera.lookAt(new THREE.Vector3().addVectors(droneModel.position, droneOffsetZ));
 }
 
 function animate() {
   if (mixer) mixer.update(clock.getDelta());
   updateGamepad();
-  // camera.position.lookAt(droneModel.position);
   renderer.render(scene, camera);
 }
 
