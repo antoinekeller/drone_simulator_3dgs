@@ -74,7 +74,11 @@ loader.load(glbModelPath, (gltf) => {
 const clock = new THREE.Clock();
 var omega_yaw = 0.0;
 const max_omega_yaw = 90 * Math.PI / 180; // 90 degrees per second
+var vx = 0.0
+var vy = 0.0
 var vz = 0.0
+const max_vx = 0.1; // 3m/s ?
+const max_vy = 0.1; // 3m/s ?
 const max_vz = 0.1; // 3m/s ?
 
 function updateGamepad() {
@@ -106,21 +110,31 @@ function updateGamepad() {
   // droneModel.rotation.z -= leftX * speed;
 
   const tau_v = 0.1;
+  var vx_c = rightX * max_vx;
+  var vy_c = -rightY * max_vy;
   var vz_c = - leftY * max_vz;
+  vx = Math.exp(-dt/tau_v) * vx + (1 - Math.exp(-dt/tau_v)) * vx_c;
+  vy = Math.exp(-dt/tau_v) * vy + (1 - Math.exp(-dt/tau_v)) * vy_c;
   vz = Math.exp(-dt/tau_v) * vz + (1 - Math.exp(-dt/tau_v)) * vz_c;
 
-  const translation = new THREE.Matrix4().makeTranslation(0, 0, vz);
+  const translation = new THREE.Matrix4().makeTranslation(vx, vy, vz);
 
   const rotZ = new THREE.Matrix4().makeRotationZ(omega_yaw * dt);
 
+  const euler = new THREE.Euler();
+  euler.setFromRotationMatrix(droneModel.matrixWorld, "XZY");
+  const rotationY = euler.y;
+
   const t1 = new THREE.Matrix4().makeTranslation(-droneModel.position.x, -droneModel.position.y, -droneModel.position.z);
-  const t2 = new THREE.Matrix4().copy(t1).invert();
+  const r1 = new THREE.Matrix4().makeRotationZ(-rotationY + Math.PI);
+  const T1 = new THREE.Matrix4().multiply(r1).multiply(t1);
+  const T2 = new THREE.Matrix4().copy(T1).invert();
 
   const displacementMatrix = new THREE.Matrix4()
-    .multiply(t2)
+    .multiply(T2)
+    .multiply(translation)
     .multiply(rotZ)
-    .multiply(t1)
-    .multiply(translation);
+    .multiply(T1);
 
   droneModel.applyMatrix4(displacementMatrix);
 }
