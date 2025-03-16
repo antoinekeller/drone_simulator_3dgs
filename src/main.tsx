@@ -52,24 +52,20 @@ const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
 const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
 
-const initMatrix = new THREE.Matrix4()
-  .multiply(translation)
-  .multiply(rotX)
-  .multiply(rotY);
+
 
 loader.load(glbModelPath, (gltf) => {
   droneModel = gltf.scene;
   scene.add(droneModel);
   droneModel.position.set(0, 0, 0);
   droneModel.scale.set(0.5, 0.5, 0.5);
-  // droneModel.rotation.set(Math.PI / 2, Math.PI, 0);
 
-  console.log(droneModel.rotation);
+  const initMatrix = new THREE.Matrix4()
+  .multiply(translation)
+  .multiply(rotX)
+  .multiply(rotY);
   
   droneModel.applyMatrix4(initMatrix);
-
-  console.log(droneModel.rotation);
-
 
   mixer = new THREE.AnimationMixer(droneModel);
   mixer.clipAction(gltf.animations[0]).play();
@@ -118,7 +114,7 @@ function updateGamepad() {
   const rotZ = new THREE.Matrix4().makeRotationZ(omega_yaw * dt);
 
   const t1 = new THREE.Matrix4().makeTranslation(-droneModel.position.x, -droneModel.position.y, -droneModel.position.z);
-  const t2 = new THREE.Matrix4().makeTranslation(droneModel.position.x, droneModel.position.y, droneModel.position.z);
+  const t2 = new THREE.Matrix4().copy(t1).invert();
 
   const displacementMatrix = new THREE.Matrix4()
     .multiply(t2)
