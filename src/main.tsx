@@ -27,7 +27,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.up = new THREE.Vector3().fromArray([0, 0, 1]);
-camera.position.set(0, -5, 5);
+
 
 const viewer = new GaussianSplats3D.Viewer({
   renderer: renderer,
@@ -51,7 +51,7 @@ let mixer = null;
 const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
 const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
-
+const cameraPositionInDrone = new THREE.Vector3(0, -2, 2);
 
 
 loader.load(glbModelPath, (gltf) => {
@@ -66,6 +66,18 @@ loader.load(glbModelPath, (gltf) => {
   .multiply(rotY);
   
   droneModel.applyMatrix4(initMatrix);
+
+  const worldCameraPosition = new THREE.Vector3().addVectors(droneModel.position, cameraPositionInDrone);
+
+  camera.position.set(
+    worldCameraPosition.x, 
+    worldCameraPosition.y,
+    worldCameraPosition.z
+  );
+
+  const small_z = new THREE.Vector3(0, 0, 1);
+  
+  camera.lookAt(new THREE.Vector3().addVectors(droneModel.position, small_z));
 
   mixer = new THREE.AnimationMixer(droneModel);
   mixer.clipAction(gltf.animations[0]).play();
@@ -124,9 +136,10 @@ function updateGamepad() {
   const euler = new THREE.Euler();
   euler.setFromRotationMatrix(droneModel.matrixWorld, "XZY");
   const rotationY = euler.y;
+  const yaw = -rotationY + Math.PI;
 
   const t1 = new THREE.Matrix4().makeTranslation(-droneModel.position.x, -droneModel.position.y, -droneModel.position.z);
-  const r1 = new THREE.Matrix4().makeRotationZ(-rotationY + Math.PI);
+  const r1 = new THREE.Matrix4().makeRotationZ(yaw);
   const T1 = new THREE.Matrix4().multiply(r1).multiply(t1);
   const T2 = new THREE.Matrix4().copy(T1).invert();
 
@@ -137,11 +150,27 @@ function updateGamepad() {
     .multiply(T1);
 
   droneModel.applyMatrix4(displacementMatrix);
+  
+  const cameraPositionInWorld = new THREE.Vector3().copy(cameraPositionInDrone);
+  cameraPositionInWorld.applyMatrix4(r1.invert());
+
+  const worldCameraPosition = new THREE.Vector3().addVectors(droneModel.position, cameraPositionInWorld);
+
+  camera.position.set(
+    worldCameraPosition.x, 
+    worldCameraPosition.y,
+    worldCameraPosition.z
+  );
+
+  const small_z = new THREE.Vector3(0, 0, 1);
+  
+  camera.lookAt(new THREE.Vector3().addVectors(droneModel.position, small_z));
 }
 
 function animate() {
   if (mixer) mixer.update(clock.getDelta());
   updateGamepad();
+  // camera.position.lookAt(droneModel.position);
   renderer.render(scene, camera);
 }
 
