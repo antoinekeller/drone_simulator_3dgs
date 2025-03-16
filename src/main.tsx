@@ -96,6 +96,10 @@ var vz = 0.0;
 const max_vx = 0.1;
 const max_vy = 0.1;
 const max_vz = 0.1;
+var roll = 0.0;
+const max_roll = (15 * Math.PI) / 180;
+var pitch = 0.0;
+const max_pitch = (15 * Math.PI) / 180;
 
 function updateGamepad() {
   const gamepads = navigator.getGamepads();
@@ -104,7 +108,6 @@ function updateGamepad() {
   const dt = 1 / 60.0; // 60 FPS
 
   const gp = gamepads[0];
-  // console.log(gp);
   const leftX = gp.axes[0];
   const leftY = gp.axes[1];
   const rightX = gp.axes[2];
@@ -124,9 +127,17 @@ function updateGamepad() {
   vx = Math.exp(-dt / tau_v) * vx + (1 - Math.exp(-dt / tau_v)) * vx_c;
   vy = Math.exp(-dt / tau_v) * vy + (1 - Math.exp(-dt / tau_v)) * vy_c;
   vz = Math.exp(-dt / tau_v) * vz + (1 - Math.exp(-dt / tau_v)) * vz_c;
+  var roll_c = rightX * max_roll;
+  roll = Math.exp(-dt / tau_v) * roll + (1 - Math.exp(-dt / tau_v)) * roll_c;
+  var roll_v = ((roll_c - roll) / tau_v) * dt;
+  var pitch_c = rightY * max_pitch;
+  pitch = Math.exp(-dt / tau_v) * pitch + (1 - Math.exp(-dt / tau_v)) * pitch_c;
+  var pitch_v = ((pitch_c - pitch) / tau_v) * dt;
 
   const translation = new THREE.Matrix4().makeTranslation(vx, vy, vz);
 
+  const rotX = new THREE.Matrix4().makeRotationX(pitch_v);
+  const rotY = new THREE.Matrix4().makeRotationY(roll_v);
   const rotZ = new THREE.Matrix4().makeRotationZ(omega_yaw * dt);
 
   const euler = new THREE.Euler();
@@ -147,6 +158,8 @@ function updateGamepad() {
     .multiply(T2)
     .multiply(translation)
     .multiply(rotZ)
+    .multiply(rotY)
+    .multiply(rotX)
     .multiply(T1);
 
   droneModel.applyMatrix4(displacementMatrix);
