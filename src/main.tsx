@@ -189,9 +189,12 @@ function updateDynamics() {
     worldCameraPosition.z
   );
 
-  camera.lookAt(
-    new THREE.Vector3().addVectors(droneModel.position, droneOffsetZ)
+  const dronePosition = new THREE.Vector3().addVectors(
+    droneModel.position,
+    droneOffsetZ
   );
+
+  camera.lookAt(dronePosition);
 }
 
 function animate() {
