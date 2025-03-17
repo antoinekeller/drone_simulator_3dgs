@@ -1,1 +1,57 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
 
+#menu {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: rgba(0, 0, 0, 0); /* Semi-transparent black */
+  color: white; /* Keep text white */
+  padding: 5px 5px;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+#menu h3 {
+  display: block;
+  font-size: 1.37em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  unicode-bidi: isolate;
+  /* Dark border effect around the text */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+p {
+  margin: 0;
+}
+
+#toggleMenu {
+  all: unset; /* Removes all default button styles */
+  cursor: pointer; /* Keeps it clickable */
+  font-size: inherit; /* Matches surrounding text */
+  color: inherit; /* Matches text color */
+  display: inline; /* Ensures it behaves like text */
+}
+
+ul {
+  display: none;
+}
+
+#canvas {
+  padding: 0px;
+}

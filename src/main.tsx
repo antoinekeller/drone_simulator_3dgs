@@ -4,6 +4,47 @@ import * as GaussianSplats3D from "@mkkellogg/gaussian-splats-3d";
 import * as THREE from "three";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
+// Create menu container
+const menu = document.createElement("div");
+menu.id = "menu";
+
+// Add a toggle button and shortcut list
+menu.innerHTML = `
+  <h3>
+    Drone simulator with 3D Gaussian Splats
+  </h3>
+    <p>
+			<small class="nohf">
+				By <a href="https://github.com/antoinekeller">Antoine Keller</a>.
+				Code on
+				<a href="https://github.com/antimatter15/splat">Github</a
+				>.
+			</small>
+    </p>
+    <button id="toggleMenu">► Instructions</button>
+  <ul id="shortcutList">
+    <li><b>WASD</b> - Move</li>
+    <li><b>Arrow Keys</b> - Rotate</li>
+    <li><b>F</b> - Toggle Free Mode</li>
+    <li><b>R</b> - Reset Camera</li>
+  </ul>
+`;
+document.body.appendChild(menu);
+
+// Add event listener to toggle the menu
+document.getElementById("toggleMenu")!.addEventListener("click", () => {
+  const list = document.getElementById("shortcutList");
+  const button = document.getElementById("toggleMenu");
+
+  if (list!.style.display === "block") {
+    list!.style.display = "none";
+    button!.textContent = "► Instructions"; // Arrow up
+  } else {
+    list!.style.display = "block";
+    button!.textContent = "▼ Instructions"; // Arrow down
+  }
+});
+
 const ply = `src/assets/point_cloud.ply`;
 const glbModelPath = `src/assets/flying_drone_animation.glb`;
 
@@ -11,7 +52,7 @@ var freeMode = false;
 const scene = new THREE.Scene();
 const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
-scene.background = new THREE.Color(0xffffff);
+scene.background = new THREE.Color(0x87ceeb);
 scene.add(new THREE.AxesHelper(5));
 
 const renderer = new THREE.WebGLRenderer();
