@@ -45,7 +45,7 @@ document.getElementById("toggleMenu")!.addEventListener("click", () => {
   }
 });
 
-const ply = `src/assets/point_cloud.ply`;
+const ply = `src/assets/point_cloud_castle.ply`;
 const glbModelPath = `src/assets/flying_drone_animation.glb`;
 
 var freeMode = false;
@@ -134,9 +134,9 @@ const max_omega_yaw = (90 * Math.PI) / 180; // 90 degrees per second
 var vx = 0.0;
 var vy = 0.0;
 var vz = 0.0;
-const max_vx = 0.1;
-const max_vy = 0.1;
-const max_vz = 0.1;
+const max_vx = 0.3;
+const max_vy = 0.3;
+const max_vz = 0.3;
 var roll = 0.0;
 const max_roll = (15 * Math.PI) / 180;
 var pitch = 0.0;
