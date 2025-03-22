@@ -95,14 +95,14 @@ let mixer: THREE.AnimationMixer = null;
 const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
 const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
-const cameraPositionInDrone = new THREE.Vector3(0, -2, 2);
-const droneOffsetZ = new THREE.Vector3(0, 0, 1);
+const cameraPositionInDrone = new THREE.Vector3(0, -0.5, 0.5);
+const droneOffsetZ = new THREE.Vector3(0, 0, 0.3);
 
 loader.load(glbModelPath, (gltf: GLTF) => {
   droneModel = gltf.scene;
   scene.add(droneModel);
   droneModel.position.set(0, 0, 0);
-  droneModel.scale.set(0.5, 0.5, 0.5);
+  droneModel.scale.set(0.1, 0.1, 0.1);
 
   const initMatrix = new THREE.Matrix4()
     .multiply(translation)
