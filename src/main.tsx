@@ -136,9 +136,9 @@ const max_omega_yaw = (90 * Math.PI) / 180; // 90 degrees per second
 var vx = 0.0;
 var vy = 0.0;
 var vz = 0.0;
-const max_vx = 0.3;
-const max_vy = 0.3;
-const max_vz = 0.3;
+const max_vx = 0.2;
+const max_vy = 0.2;
+const max_vz = 0.2;
 var roll = 0.0;
 const max_roll = (15 * Math.PI) / 180;
 var pitch = 0.0;
@@ -167,14 +167,14 @@ function updateDynamics() {
 
   const dt = 1 / 60.0; // 60 FPS
 
-  const tau_yaw = 0.3;
+  const tau_yaw = 0.2;
 
   var omega_c = -controls.leftX * max_omega_yaw;
   omega_yaw =
     Math.exp(-dt / tau_yaw) * omega_yaw +
     (1 - Math.exp(-dt / tau_yaw)) * omega_c;
 
-  const tau_v = 0.1;
+  const tau_v = 0.2;
   var vx_c = controls.rightX * max_vx;
   var vy_c = -controls.rightY * max_vy;
   var vz_c = -controls.leftY * max_vz;
