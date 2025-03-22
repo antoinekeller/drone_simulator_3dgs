@@ -3,6 +3,8 @@ import "./index.css";
 import * as GaussianSplats3D from "@mkkellogg/gaussian-splats-3d";
 import * as THREE from "three";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import { createRoot } from "react-dom/client";
+import { useState, useEffect, useRef } from "react";
 
 // Create menu container
 const menu = document.createElement("div");
@@ -236,7 +238,79 @@ function updateDynamics() {
   );
 
   camera.lookAt(dronePosition);
+
+  const speed = Math.sqrt(vx * vx + vy * vy + vz * vz);
+  motorSpeed = 1.0 + 0.7 * speed;
+  root.render(<MotorSound speed={motorSpeed} />);
 }
+
+// 🛠 Create a React component for the Motor Sound
+const MotorSound = ({ speed }: { speed: number }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const bufferRef = useRef<AudioBuffer | null>(null);
+
+  useEffect(() => {
+    audioCtxRef.current = new AudioContext();
+
+    fetch("src/assets/quadcopter.mp3")
+      .then((response) => response.arrayBuffer())
+      .then((arrayBuffer) => audioCtxRef.current!.decodeAudioData(arrayBuffer))
+      .then((audioBuffer) => {
+        bufferRef.current = audioBuffer;
+      })
+      .catch((error) => console.error("Error loading sound:", error));
+  }, []);
+
+  const startEngine = () => {
+    if (!audioCtxRef.current || !bufferRef.current) return;
+
+    const source = audioCtxRef.current.createBufferSource();
+    source.buffer = bufferRef.current;
+    source.loop = true;
+    source.connect(audioCtxRef.current.destination);
+    source.start();
+
+    sourceRef.current = source;
+    setIsPlaying(true);
+  };
+
+  const stopEngine = () => {
+    sourceRef.current?.stop();
+    setIsPlaying(false);
+  };
+
+  useEffect(() => {
+    if (sourceRef.current) {
+      sourceRef.current.playbackRate.setValueAtTime(
+        speed,
+        audioCtxRef.current!.currentTime
+      );
+    }
+  }, [speed]);
+
+  return (
+    <div id="motor-sound-ui">
+      {isPlaying ? (
+        <button onClick={stopEngine}>🔊</button> // Stop engine when clicked
+      ) : (
+        <button onClick={startEngine}>🔇</button> // Start engine when clicked
+      )}
+    </div>
+  );
+};
+
+// Create a container for the React UI
+const reactContainer = document.createElement("div");
+reactContainer.id = "react-root";
+document.body.appendChild(reactContainer);
+
+// React Root
+const root = createRoot(reactContainer);
+
+// Drone & Three.js Setup
+let motorSpeed = 1.0; // 🛠 This will be linked to the MotorSound component
 
 function animate() {
   if (mixer) mixer.update(clock.getDelta());

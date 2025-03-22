@@ -55,3 +55,16 @@ ul {
 #canvas {
   padding: 0px;
 }
+
+#motor-sound-ui {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  background: rgba(0, 0, 0, 0); /* Semi-transparent black */
+  color: white; /* Keep text white */
+  padding: 5px 5px;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  z-index: 1000;
+}
