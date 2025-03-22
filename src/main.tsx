@@ -50,7 +50,7 @@ document.getElementById("toggleMenu")!.addEventListener("click", () => {
 const ply = `src/assets/point_cloud_castle.ply`;
 const glbModelPath = `src/assets/flying_drone_animation.glb`;
 
-var freeMode = false;
+var inCameraMode = false;
 const scene = new THREE.Scene();
 const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
@@ -84,10 +84,6 @@ viewer
   .addSplatScene(ply, { streamView: true, showLoadingUI: false })
   .then(() => viewer.start());
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "f") freeMode = !freeMode;
-});
-
 const loader = new GLTFLoader();
 let droneModel: THREE.Object3D = null;
 let mixer: THREE.AnimationMixer = null;
@@ -96,7 +92,7 @@ const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
 const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
 const cameraPositionInDrone = new THREE.Vector3(0, -0.5, 0.5);
-const droneOffsetZ = new THREE.Vector3(0, 0, 0.3);
+const droneOffsetZ = new THREE.Vector3(0, 0, 0.15);
 
 loader.load(glbModelPath, (gltf: GLTF) => {
   droneModel = gltf.scene;
@@ -226,18 +222,28 @@ function updateDynamics() {
     cameraPositionInWorld
   );
 
-  camera.position.set(
-    worldCameraPosition.x,
-    worldCameraPosition.y,
-    worldCameraPosition.z
-  );
-
   const dronePosition = new THREE.Vector3().addVectors(
     droneModel.position,
     droneOffsetZ
   );
 
-  camera.lookAt(dronePosition);
+  if (!inCameraMode) {
+    camera.position.set(
+      worldCameraPosition.x,
+      worldCameraPosition.y,
+      worldCameraPosition.z
+    );
+
+    camera.lookAt(dronePosition);
+  } else {
+    camera.position.set(dronePosition.x, dronePosition.y, dronePosition.z);
+    var lookAt = new THREE.Vector3(
+      2 * dronePosition.x - worldCameraPosition.x,
+      2 * dronePosition.y - worldCameraPosition.y,
+      2 * dronePosition.z - worldCameraPosition.z
+    );
+    camera.lookAt(lookAt);
+  }
 
   const speed = Math.sqrt(vx * vx + vy * vy + vz * vz);
   motorSpeed = 1.0 + 0.7 * speed;
@@ -335,6 +341,8 @@ window.addEventListener("keydown", (event) => {
   if (event.key == "ArrowDown") controls.rightY = 1;
   if (event.key == "ArrowLeft") controls.rightX = -1;
   if (event.key == "ArrowRight") controls.rightX = 1;
+
+  if (event.key == "c") inCameraMode = !inCameraMode;
 });
 
 window.addEventListener("keyup", (event) => {
