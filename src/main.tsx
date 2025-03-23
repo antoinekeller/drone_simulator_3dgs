@@ -6,44 +6,6 @@ import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { createRoot } from "react-dom/client";
 import { useState, useEffect, useRef } from "react";
 
-// Create menu container
-const menu = document.createElement("div");
-menu.id = "menu";
-
-// Add a toggle button and shortcut list
-menu.innerHTML = `
-  <h3>
-    Drone simulator with 3D Gaussian Splats
-  </h3>
-    <p>
-			<small class="nohf">
-				By <a href="https://github.com/antoinekeller">Antoine Keller</a>.
-				Code on
-				<a href="https://github.com/antimatter15/splat">Github</a
-				>.
-			</small>
-    </p>
-    <button id="toggleMenu">► Instructions</button>
-  <div id="shortcutList">
-    <b>Keyboard controls</b>
-    <ul>
-      <li><b>WASD</b> - Move</li>
-      <li><b>Arrow Keys</b> - Rotate</li>
-      <li><b>F</b> - Toggle Free Mode</li>
-      <li><b>R</b> - Reset Camera</li>
-    </ul>
-    <b>Gamepad controls</b>
-    <ul>
-      <li><b>Left stick Y</b> - Up/Down</li>
-      <li><b>Left stick X</b> - Yaw angle</li>
-      <li><b>Right stick</b> - Navigate</li>
-      <li><b>R2</b> - Toggle Camera Mode</li>
-      <li><b>L1/L2</b> - Camera pitch</li>
-    </ul>
-  </div>
-`;
-document.body.appendChild(menu);
-
 // Add event listener to toggle the menu
 document.getElementById("toggleMenu")!.addEventListener("click", () => {
   const list = document.getElementById("shortcutList");
