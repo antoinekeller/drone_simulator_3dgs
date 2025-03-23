@@ -48,7 +48,7 @@ p {
   display: inline; /* Ensures it behaves like text */
 }
 
-ul {
+#shortcutList {
   display: none;
 }
 
