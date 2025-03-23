@@ -143,7 +143,6 @@ function updateGamepad() {
   controls.rightX = gp.axes[2];
   controls.rightY = gp.axes[3];
 
-  console.log(gp.buttons);
   if (gp.buttons[4].pressed) omega_pitch_c = -max_omega_pitch; // L1
   else if (gp.buttons[6].pressed) omega_pitch_c = max_omega_pitch; // L2
   else omega_pitch_c = 0;
@@ -311,10 +310,7 @@ const MotorSound = ({ speed }: { speed: number }) => {
   );
 };
 
-// Create a container for the React UI
-const reactContainer = document.createElement("div");
-reactContainer.id = "react-root";
-document.body.appendChild(reactContainer);
+const reactContainer = document.getElementById("mute-button");
 
 // React Root
 const root = createRoot(reactContainer);
