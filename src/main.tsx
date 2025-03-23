@@ -144,8 +144,9 @@ var roll = 0.0;
 const max_roll = (15 * Math.PI) / 180;
 var pitch = 0.0;
 const max_pitch = (15 * Math.PI) / 180;
-
-const pitchIncr = (0.5 * Math.PI) / 180;
+var omega_pitch_c = 0.0;
+var omega_pitch = 0.0;
+const max_omega_pitch = (30 * Math.PI) / 180;
 
 var controls = {
   leftX: 0,
@@ -153,6 +154,10 @@ var controls = {
   rightX: 0,
   rightY: 0,
 };
+
+function clip(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
 
 function updateGamepad() {
   const gamepads = navigator.getGamepads();
@@ -220,6 +225,11 @@ function updateDynamics() {
     .multiply(T1);
 
   droneModel.applyMatrix4(displacementMatrix);
+
+  omega_pitch =
+    Math.exp(-dt / tau_yaw) * omega_pitch +
+    (1 - Math.exp(-dt / tau_yaw)) * omega_pitch_c;
+  cameraPitch = clip(cameraPitch + omega_pitch * dt, 0, Math.PI / 2);
 
   cameraPositionInDrone.y = -Math.cos(cameraPitch) * 0.5;
   cameraPositionInDrone.z = Math.sin(cameraPitch) * 0.5;
@@ -353,9 +363,8 @@ window.addEventListener("keydown", (event) => {
   if (event.key == "ArrowRight") controls.rightX = 1;
 
   if (event.key == "c") inCameraMode = !inCameraMode;
-  if (event.key == "r")
-    cameraPitch = Math.min(Math.PI / 2, cameraPitch + pitchIncr);
-  if (event.key == "f") cameraPitch = Math.max(0, cameraPitch - pitchIncr);
+  if (event.key == "r") omega_pitch_c = max_omega_pitch;
+  if (event.key == "f") omega_pitch_c = -max_omega_pitch;
 });
 
 window.addEventListener("keyup", (event) => {
@@ -364,4 +373,5 @@ window.addEventListener("keyup", (event) => {
   if (event.key == "ArrowUp" || event.key == "ArrowDown") controls.rightY = 0;
   if (event.key == "ArrowLeft" || event.key == "ArrowRight")
     controls.rightX = 0;
+  if (event.key == "r" || event.key == "f") omega_pitch_c = 0;
 });
