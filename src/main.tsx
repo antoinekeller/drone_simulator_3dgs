@@ -164,6 +164,7 @@ var controls = {
   leftY: 0,
   rightX: 0,
   rightY: 0,
+  prevR2State: false, // Stores the previous state of the button
 };
 
 function clip(value: number, min: number, max: number) {
@@ -179,6 +180,16 @@ function updateGamepad() {
   controls.leftY = gp.axes[1];
   controls.rightX = gp.axes[2];
   controls.rightY = gp.axes[3];
+
+  console.log(gp.buttons);
+  if (gp.buttons[4].pressed) omega_pitch_c = -max_omega_pitch; // L1
+  else if (gp.buttons[6].pressed) omega_pitch_c = max_omega_pitch; // L2
+  else omega_pitch_c = 0;
+
+  if (gp.buttons[7].touched && !controls.prevR2State)
+    inCameraMode = !inCameraMode; // R2
+
+  controls.prevR2State = gp.buttons[7].touched;
 }
 
 function updateDynamics() {
