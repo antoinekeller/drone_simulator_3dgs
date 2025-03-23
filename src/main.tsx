@@ -38,7 +38,7 @@ renderer.domElement.style.setProperty("margin", "auto");
 const camera = new THREE.PerspectiveCamera(
   70,
   window.innerWidth / window.innerHeight,
-  0.1,
+  0.2,
   500
 );
 
@@ -212,7 +212,7 @@ function updateDynamics() {
   omega_pitch =
     Math.exp(-dt / tau_yaw) * omega_pitch +
     (1 - Math.exp(-dt / tau_yaw)) * omega_pitch_c;
-  cameraPitch = clip(cameraPitch + omega_pitch * dt, 0, Math.PI / 2);
+  cameraPitch = clip(cameraPitch + omega_pitch * dt, 0.32, 1.55);
 
   cameraPositionInDrone.y = -Math.cos(cameraPitch) * 0.5;
   cameraPositionInDrone.z = Math.sin(cameraPitch) * 0.5;
@@ -237,13 +237,23 @@ function updateDynamics() {
       worldCameraPosition.z
     );
 
-    camera.lookAt(dronePosition);
+    var lookAt = new THREE.Vector3(
+      dronePosition.x,
+      dronePosition.y,
+      dronePosition.z + 0.1
+    );
+
+    camera.lookAt(lookAt);
   } else {
-    camera.position.set(dronePosition.x, dronePosition.y, dronePosition.z);
+    camera.position.set(
+      dronePosition.x,
+      dronePosition.y,
+      dronePosition.z + 0.1
+    );
     var lookAt = new THREE.Vector3(
       2 * dronePosition.x - worldCameraPosition.x,
       2 * dronePosition.y - worldCameraPosition.y,
-      2 * dronePosition.z - worldCameraPosition.z
+      2 * (dronePosition.z + 0.1) - worldCameraPosition.z
     );
     camera.lookAt(lookAt);
   }
