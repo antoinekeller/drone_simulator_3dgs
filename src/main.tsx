@@ -63,7 +63,7 @@ document.body.appendChild(renderer.domElement);
 renderer.domElement.style.setProperty("margin", "auto");
 
 const camera = new THREE.PerspectiveCamera(
-  80,
+  70,
   window.innerWidth / window.innerHeight,
   0.1,
   500
