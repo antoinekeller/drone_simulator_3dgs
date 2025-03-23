@@ -91,7 +91,12 @@ let mixer: THREE.AnimationMixer = null;
 const rotX = new THREE.Matrix4().makeRotationX(Math.PI / 2);
 const rotY = new THREE.Matrix4().makeRotationY(Math.PI);
 const translation = new THREE.Matrix4().makeTranslation(0, 0, -0.85);
-const cameraPositionInDrone = new THREE.Vector3(0, -0.5, 0.5);
+var cameraPitch = (45 * Math.PI) / 180;
+var cameraPositionInDrone = new THREE.Vector3(
+  0,
+  -Math.cos(cameraPitch) * 0.5,
+  Math.sin(cameraPitch) * 0.5
+);
 const droneOffsetZ = new THREE.Vector3(0, 0, 0.15);
 
 loader.load(glbModelPath, (gltf: GLTF) => {
@@ -139,6 +144,8 @@ var roll = 0.0;
 const max_roll = (15 * Math.PI) / 180;
 var pitch = 0.0;
 const max_pitch = (15 * Math.PI) / 180;
+
+const pitchIncr = (0.5 * Math.PI) / 180;
 
 var controls = {
   leftX: 0,
@@ -213,6 +220,9 @@ function updateDynamics() {
     .multiply(T1);
 
   droneModel.applyMatrix4(displacementMatrix);
+
+  cameraPositionInDrone.y = -Math.cos(cameraPitch) * 0.5;
+  cameraPositionInDrone.z = Math.sin(cameraPitch) * 0.5;
 
   const cameraPositionInWorld = new THREE.Vector3().copy(cameraPositionInDrone);
   cameraPositionInWorld.applyMatrix4(r1.invert());
@@ -343,6 +353,9 @@ window.addEventListener("keydown", (event) => {
   if (event.key == "ArrowRight") controls.rightX = 1;
 
   if (event.key == "c") inCameraMode = !inCameraMode;
+  if (event.key == "r")
+    cameraPitch = Math.min(Math.PI / 2, cameraPitch + pitchIncr);
+  if (event.key == "f") cameraPitch = Math.max(0, cameraPitch - pitchIncr);
 });
 
 window.addEventListener("keyup", (event) => {
