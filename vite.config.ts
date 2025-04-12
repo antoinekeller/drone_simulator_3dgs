@@ -16,4 +16,8 @@ export default defineConfig({
       },
     },
   ],
+  server: {
+	  host: true, // allow external access
+	  allowedHosts: ['www.antoinekeller.tech', 'antoinekeller.tech']
+  },
 });
