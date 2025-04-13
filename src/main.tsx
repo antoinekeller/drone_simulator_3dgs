@@ -20,7 +20,14 @@ document.getElementById("toggleMenu")!.addEventListener("click", () => {
   }
 });
 
-const ply = `src/assets/point_cloud_castle.ply`;
+let gs = `${document.URL.split("/").pop()?.split(".")[0]}`;
+
+// If path is just "/" (homepage), default to "castle"
+if (!gs || gs === "") {
+  gs = "castle";
+}
+
+const ply = `src/assets/pointcloud_${gs}.ply`;
 const glbModelPath = `src/assets/flying_drone_animation.glb`;
 
 var inCameraMode = false;
@@ -28,7 +35,7 @@ const scene = new THREE.Scene();
 const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
 scene.background = new THREE.Color(0x87ceeb);
-scene.add(new THREE.AxesHelper(5));
+// scene.add(new THREE.AxesHelper(5));
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -75,7 +82,7 @@ const droneOffsetZ = new THREE.Vector3(0, 0, 0.15);
 loader.load(glbModelPath, (gltf: GLTF) => {
   droneModel = gltf.scene;
   scene.add(droneModel);
-  droneModel.position.set(0, 0, 0);
+  droneModel.position.set(0, 0, -2);
   droneModel.scale.set(0.1, 0.1, 0.1);
 
   const initMatrix = new THREE.Matrix4()
@@ -110,9 +117,9 @@ const max_omega_yaw = (90 * Math.PI) / 180; // 90 degrees per second
 var vx = 0.0;
 var vy = 0.0;
 var vz = 0.0;
-const max_vx = 0.2;
-const max_vy = 0.2;
-const max_vz = 0.2;
+const max_vx = 0.1;
+const max_vy = 0.1;
+const max_vz = 0.1;
 var roll = 0.0;
 const max_roll = (15 * Math.PI) / 180;
 var pitch = 0.0;

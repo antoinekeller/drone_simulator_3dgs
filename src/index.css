@@ -56,6 +56,31 @@ p {
   padding: 0px;
 }
 
+#nav-buttons {
+  position: absolute;
+  bottom: 50px;
+  left: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.nav-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-img:hover {
+  transform: scale(1.05);
+}
+
 #motor-sound-ui {
   position: absolute;
   bottom: 5px;
