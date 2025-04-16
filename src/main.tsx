@@ -34,7 +34,7 @@ var inCameraMode = false;
 const scene = new THREE.Scene();
 const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
-scene.background = new THREE.Color(0x87ceeb);
+scene.background = new THREE.Color(gs === "castle" ? 0x87ceeb : 0xffffff);
 // scene.add(new THREE.AxesHelper(5));
 
 const renderer = new THREE.WebGLRenderer();
