@@ -65,6 +65,7 @@ viewer
   .addSplatScene(ply, {
     streamView: true,
     showLoadingUI: true,
+    splatAlphaRemovalThreshold: 25,
   })
   .then(() => viewer.start());
 
