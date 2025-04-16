@@ -9,6 +9,16 @@ It embeds a drone model taken from [Sketchfab](https://sketchfab.com/3d-models/f
 
 I made the 3D Gaussian Splatting scenes with a DJI drone, performed photogrammetry with [COLMAP](https://colmap.github.io/), rectified vertically and rescaled it manually, then trained it for 30k iterations with the official [gaussian-splatting repo](https://github.com/graphdeco-inria/gaussian-splatting).
 
+<p>
+  <em>Castle</em></br>
+  <img src="./src/assets/demo_castle.png" alt="Demo - Castle" style="width:100%; max-width:100%;" />
+</p>
+
+<p>
+  <em>Stupa</em></br>
+  <img src="./src/assets/demo_stupa.png" alt="Demo - Stupa" style="width:100%; max-width:100%;" />
+</p>
+
 ## Installation
 
 ```
