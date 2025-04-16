@@ -58,10 +58,14 @@ const viewer = new GaussianSplats3D.Viewer({
   camera: camera,
   sphericalHarmonicsDegree: 0,
   useBuiltInControls: false,
+  rootElement: document.body,
 });
 
 viewer
-  .addSplatScene(ply, { streamView: true, showLoadingUI: false })
+  .addSplatScene(ply, {
+    streamView: true,
+    showLoadingUI: true,
+  })
   .then(() => viewer.start());
 
 const loader = new GLTFLoader();
