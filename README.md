@@ -2,6 +2,8 @@
 
 [\[ONLINE DEMO\]](https://www.antoinekeller.tech/)
 
+[\[YOUTUBE VIDEO\]](https://youtu.be/Q0kTwmlhLAA)
+
 This project is a Vite+React project that simulates a drone in a 3D Gaussian Splatting scene.
 The project is based on the [Three.js-based implemetation of a renderer of 3D GS](https://github.com/mkkellogg/GaussianSplats3D) by [mkkellogg](https://github.com/mkkellogg).
 
